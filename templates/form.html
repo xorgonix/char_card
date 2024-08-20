@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Character</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        textarea, input[type="text"], input[type="number"], select {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .select-with-custom {
+            position: relative;
+        }
+        .select-with-custom select, .select-with-custom input[type="text"] {
+            width: 100%;
+        }
+        .custom-input {
+            margin-top: 0.5rem;
+            display: none;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        button[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script>
+        function toggleCustomInput(selectElement) {
+            const customInput = selectElement.parentNode.querySelector('.custom-input');
+            if (selectElement.value === 'custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+
+        function toggleCustomCheckbox(checkboxElement, customInputId) {
+            const customInput = document.getElementById(customInputId);
+            if (checkboxElement.checked) {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
+                customInput.value = ''; // Clear the input if the checkbox is unchecked
+            }
+        }
+
+        // Function to open modal and load relevant options
+        function openModal(textAreaId, modalId, options) {
+            const textArea = document.getElementById(textAreaId);
+            const modal = document.getElementById(modalId);
+            const tbody = modal.querySelector('tbody');
+
+            textArea.addEventListener('dblclick', () => {
+                tbody.innerHTML = '';
+
+                options.forEach(option => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><input type="checkbox" value="${option}"></td>
+                        <td>${option}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                modal.dataset.textAreaId = textAreaId;
+                modal.showModal();
+            });
+        }
+
+        // Function to collect selected options and insert them into the textarea
+        function insertSelectedOptions(modalId) {
+            const modal = document.getElementById(modalId);
+            const textAreaId = modal.dataset.textAreaId;
+            const textArea = document.getElementById(textAreaId);
+            const checkboxes = modal.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedOptions = Array.from(checkboxes).map(checkbox => checkbox.value);
+            textArea.value = selectedOptions.join(', ');
+            closeModal(modalId);
+        }
+
+        // Function to close modal
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.close();
+        }
+
+        window.onload = function() {
+            openModal('goals', 'generalModal', [
+                'Become a great athlete',
+                'Travel the world',
+                'Master a new skill',
+                'Build a successful career',
+                'Help others in need'
+            ]);
+
+            openModal('appearance', 'generalModal', [
+                'Tall and slender',
+                'Short with a strong build',
+                'Average height with curly hair',
+                'Freckles and bright eyes',
+                'Long, flowing hair'
+            ]);
+
+            openModal('occupation', 'generalModal', [
+                'Engineer',
+                'Doctor',
+                'Artist',
+                'Teacher',
+                'Entrepreneur'
+            ]);
+
+            openModal('family', 'generalModal', [
+                'Married with children',
+                'Single with pets',
+                'Close-knit extended family',
+                'Orphaned at a young age',
+                'Estranged from family'
+            ]);
+
+            openModal('skills', 'generalModal', [
+                'Problem-solving',
+                'Creativity',
+                'Leadership',
+                'Technical expertise',
+                'Communication'
+            ]);
+
+            openModal('speech', 'generalModal', [
+                'Soft and calm',
+                'Loud and commanding',
+                'Quick and sharp',
+                'Melodic and soothing',
+                'Stuttering with nervousness'
+            ]);
+
+            openModal('backstory', 'generalModal', [
+                'Raised in a small village with a strong sense of community',
+                'Orphaned at a young age and grew up on the streets',
+                'Noble upbringing with a thirst for adventure',
+                'Lost everything in a tragic accident and seeks redemption',
+                'Traveled the world to discover hidden secrets'
+            ]);
+
+            openModal('body_language', 'generalModal', [
+                'Always stands tall with a confident posture',
+                'Fidgets constantly, unable to stay still',
+                'Moves with grace and elegance',
+                'Tends to avoid eye contact, especially when nervous',
+                'Has a habit of crossing arms when feeling defensive'
+            ]);
+
+            openModal('physical_health', 'generalModal', [
+                'In peak physical condition, regularly exercises',
+                'Struggles with chronic pain in the joints',
+                'Recently recovered from a serious illness',
+                'Always appears tired and worn out',
+                'Has a disability that affects movement'
+            ]);
+
+            openModal('mental_health', 'generalModal', [
+                'Calm and collected under pressure',
+                'Suffers from anxiety and overthinks situations',
+                'Prone to mood swings and unpredictable behavior',
+                'Generally optimistic but has bouts of depression',
+                'Keeps emotions bottled up, rarely expresses feelings'
+            ]);
+        }
+    </script>
+</head>
+<body>
+    <main class="container">
+        <h1>Create a Character</h1>
+        <form method="post" action="/generate" class="full-width">
+            <label for="description">General Description</label>
+            <textarea id="description" name="description" rows="4" placeholder="Describe your character...">{{ description or '' }}</textarea>
+            <button type="submit">Generate Character</button>
+        </form>
+
+        <hr>
+
+        <form method="post" action="/submit" class="form-grid">
+            <!-- Column 1 -->
+            <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="{{ name or '' }}" required placeholder="Character name">
+
+                <label for="gender">Gender</label>
+                <div class="select-with-custom">
+                    <select id="gender" name="gender" onchange="toggleCustomInput(this)" required>
+                        <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Non-binary" {% if gender == 'Non-binary' %}selected{% endif %}>Non-binary</option>
+                        <option value="Other" {% if gender == 'Other' %}selected{% endif %}>Other</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" class="custom-input" id="custom_gender" name="custom_gender" placeholder="Enter custom gender">
+                </div>
+
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" value="{{ age or '' }}" required placeholder="Character age">
+
+                <label for="sexual_orientation">Sexual Orientation</label>
+                <div class="select-with-custom">
+                    <select id="sexual_orientation" name="sexual_orientation" onchange="toggleCustomInput(this)" required>
+                        <option value="Heterosexual" {% if sexual_orientation == 'Heterosexual' %}selected{% endif %}>Heterosexual</option>
+                        <option value="Homosexual" {% if sexual_orientation == 'Homosexual' %}selected{% endif %}>Homosexual</option>
+                        <option value="Bisexual" {% if sexual_orientation == 'Bisexual' %}selected{% endif %}>Bisexual</option>
+                        <option value="Pansexual" {% if sexual_orientation == 'Pansexual' %}selected{% endif %}>Pansexual</option>
+                        <option value="Asexual" {% if sexual_orientation == 'Asexual' %}selected{% endif %}>Asexual</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" class="custom-input" id="custom_sexual_orientation" name="custom_sexual_orientation" placeholder="Enter custom orientation">
+                </div>
+
+                <label for="occupation">Occupation</label>
+                <textarea id="occupation" name="occupation" rows="2" placeholder="Describe character occupation">{{ occupation or '' }}</textarea>
+
+                <label for="family">Family</label>
+                <textarea id="family" name="family" rows="2" placeholder="Describe family relationships">{{ family or '' }}</textarea>
+
+                <label for="skills">Skills</label>
+                <textarea id="skills" name="skills" rows="2" placeholder="List character skills">{{ skills or '' }}</textarea>
+
+                <label for="goals">Goals</label>
+                <textarea id="goals" name="goals" rows="2" placeholder="Describe character goals">{{ goals or '' }}</textarea>
+
+                <label for="personality">Personality</label>
+                <div>
+                    <label><input type="checkbox" name="personality" value="Overconfident" {% if "Overconfident" in personality %}checked{% endif %}> Overconfident</label>
+                    <label><input type="checkbox" name="personality" value="Easily excited" {% if "Easily excited" in personality %}checked{% endif %}> Easily excited</label>
+                    <label><input type="checkbox" name="personality" value="Hot-headed" {% if "Hot-headed" in personality %}checked{% endif %}> Hot-headed</label>
+                    <label><input type="checkbox" name="personality" value="Cheerful" {% if "Cheerful" in personality %}checked{% endif %}> Cheerful</label>
+                    <label><input type="checkbox" name="personality" value="Fiery" {% if "Fiery" in personality %}checked{% endif %}> Fiery</label>
+                    <label><input type="checkbox" name="personality" value="custom" onclick="toggleCustomCheckbox(this, 'custom_personality')"> Custom</label>
+                    <input type="text" class="custom-input" id="custom_personality" name="custom_personality" placeholder="Enter custom personality trait">
+                </div>
+
+                <label for="appearance">Appearance</label>
+                <textarea id="appearance" name="appearance" rows="4" placeholder="Describe character appearance">{{ appearance or '' }}</textarea>
+
+            </div>
+
+            <!-- Column 2 -->
+            <div>
+
+                <label for="speech">Speech</label>
+                <textarea id="speech" name="speech" rows="4" placeholder="Describe character speech">{{ speech or '' }}</textarea>
+
+                <label for="likes">Likes</label>
+                <div>
+                    <label><input type="checkbox" name="likes" value="Sports" {% if "Sports" in likes %}checked{% endif %}> Sports</label>
+                    <label><input type="checkbox" name="likes" value="Riding Bicycle" {% if "Riding Bicycle" in likes %}checked{% endif %}> Riding Bicycle</label>
+                    <label><input type="checkbox" name="likes" value="Video Games" {% if "Video Games" in likes %}checked{% endif %}> Video Games</label>
+                    <label><input type="checkbox" name="likes" value="Reading" {% if "Reading" in likes %}checked{% endif %}> Reading</label>
+                    <label><input type="checkbox" name="likes" value="Cooking" {% if "Cooking" in likes %}checked{% endif %}> Cooking</label>
+                    <label><input type="checkbox" name="likes" value="custom" onclick="toggleCustomCheckbox(this, 'custom_likes')"> Custom</label>
+                    <input type="text" class="custom-input" id="custom_likes" name="custom_likes" placeholder="Enter custom like">
+                </div>
+
+                <label for="dislikes">Dislikes</label>
+                <div>
+                    <label><input type="checkbox" name="dislikes" value="Laziness" {% if "Laziness" in dislikes %}checked{% endif %}> Laziness</label>
+                    <label><input type="checkbox" name="dislikes" value="Distractions" {% if "Distractions" in dislikes %}checked{% endif %}> Distractions</label>
+                    <label><input type="checkbox" name="dislikes" value="Nerds" {% if "Nerds" in dislikes %}checked{% endif %}> Nerds</label>
+                    <label><input type="checkbox" name="dislikes" value="Smart Talk" {% if "Smart Talk" in dislikes %}checked{% endif %}> Smart Talk</label>
+                    <label><input type="checkbox" name="dislikes" value="custom" onclick="toggleCustomCheckbox(this, 'custom_dislikes')"> Custom</label>
+                    <input type="text" class="custom-input" id="custom_dislikes" name="custom_dislikes" placeholder="Enter custom dislike">
+                </div>
+
+                <label for="backstory">Backstory</label>
+                <textarea id="backstory" name="backstory" rows="4" placeholder="Describe character backstory">{{ backstory or '' }}</textarea>
+
+                <label for="body_language">Body Language</label>
+                <textarea id="body_language" name="body_language" rows="2" placeholder="Describe body language">{{ body_language or '' }}</textarea>
+
+                <label for="physical_health">Physical Health</label>
+                <textarea id="physical_health" name="physical_health" rows="2" placeholder="Describe physical health">{{ physical_health or '' }}</textarea>
+
+                <label for="mental_health">Mental Health</label>
+                <textarea id="mental_health" name="mental_health" rows="2" placeholder="Describe mental health">{{ mental_health or '' }}</textarea>
+            </div>
+
+            <button type="submit" class="full-width">Submit Character</button>
+        </form>
+
+        <!-- General Purpose Modal -->
+        <dialog id="generalModal">
+            <article>
+                <header>
+                    <h3>Select Options</h3>
+                    <a href="#" aria-label="Close" class="close" onclick="closeModal('generalModal')"></a>
+                </header>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Option</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content will be injected here -->
+                    </tbody>
+                </table>
+                <footer>
+                    <button type="button" onclick="insertSelectedOptions('generalModal')">Insert Selected Options</button>
+                </footer>
+            </article>
+        </dialog>
+
+    </main>
+</body>
+</html>

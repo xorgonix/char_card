@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Character Created</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    >
+</head>
+<body>
+    <main class="container">
+        <h1>Character Created</h1>
+        <ul>
+            {% for key, value in character.items() %}
+                <li><strong>{{ key.capitalize() }}:</strong> {{ value }}</li>
+            {% endfor %}
+        </ul>
+        <a href="/">Create Another Character</a>
+    </main>
+</body>
+</html>
